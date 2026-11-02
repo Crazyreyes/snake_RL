@@ -1,22 +1,75 @@
-import csv, logging
+import csv
+import logging
 from datetime import datetime
+
+from common.artifact_naming import experiment_file_prefix
 from common.config import LOG_DIR
 
-def setup_logger(name):
-    LOG_DIR.mkdir(parents=True,exist_ok=True)
-    logger=logging.getLogger(name); logger.setLevel(logging.INFO); logger.handlers.clear()
-    handler=logging.FileHandler(LOG_DIR/f"{name}.log",encoding="utf-8")
-    handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
-    logger.addHandler(handler)
-    csv_path=LOG_DIR/f"{name}.csv"
-    if not csv_path.exists():
-        with csv_path.open("w",newline="",encoding="utf-8") as f:
-            csv.writer(f).writerow(["Timestamp","Game","Score","Epsilon","Steps","Total Reward","Replay Saved"])
-    return logger,csv_path
 
-def log_game(logger,path,game,score,epsilon,steps,total_reward,replay_saved):
-    stamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with path.open("a",newline="",encoding="utf-8") as f:
-        csv.writer(f).writerow([stamp,game,score,round(epsilon,2),steps,round(total_reward,2),replay_saved])
-    logger.info("Game %s | Score %s | Epsilon %.2f | Steps %s | Reward %.2f | Replay %s",
-                game,score,epsilon,steps,total_reward,replay_saved)
+CSV_HEADER = [
+    "Timestamp",
+    "Game",
+    "Score",
+    "Epsilon",
+    "Steps",
+    "Total Reward",
+    "Replay Saved",
+]
+
+
+def setup_logger(name):
+    """Create a unique CSV and log file for one training session."""
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+    prefix = experiment_file_prefix(name)
+    run_stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    run_name = f"{prefix}_training_{run_stamp}"
+
+    logger = logging.getLogger(run_name)
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    # Close any handlers left behind if this run name is reused.
+    for existing_handler in logger.handlers[:]:
+        logger.removeHandler(existing_handler)
+        existing_handler.close()
+
+    log_path = LOG_DIR / f"{run_name}.log"
+    handler = logging.FileHandler(log_path, encoding="utf-8")
+    handler.setFormatter(
+        logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+    )
+    logger.addHandler(handler)
+
+    csv_path = LOG_DIR / f"{run_name}.csv"
+    with csv_path.open("w", newline="", encoding="utf-8") as file:
+        csv.writer(file).writerow(CSV_HEADER)
+
+    return logger, csv_path
+
+
+def log_game(logger, path, game, score, epsilon, steps, total_reward, replay_saved):
+    stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    with path.open("a", newline="", encoding="utf-8") as file:
+        csv.writer(file).writerow(
+            [
+                stamp,
+                game,
+                score,
+                round(epsilon, 2),
+                steps,
+                round(total_reward, 2),
+                replay_saved,
+            ]
+        )
+
+    logger.info(
+        "Game %s | Score %s | Epsilon %.2f | Steps %s | Reward %.2f | Replay %s",
+        game,
+        score,
+        epsilon,
+        steps,
+        total_reward,
+        replay_saved,
+    )

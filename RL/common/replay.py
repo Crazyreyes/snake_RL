@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+
+from common.artifact_naming import experiment_file_prefix
 from common.config import REPLAY_DIR
 
 
@@ -37,11 +39,18 @@ class ReplayRecorder:
             }
         )
 
-    def save(self, game_number, score):
+    def save(self, game_number, score, experiment_name):
+        """Save a replay using the same experiment prefix as its training run."""
         REPLAY_DIR.mkdir(parents=True, exist_ok=True)
+
+        prefix = experiment_file_prefix(experiment_name)
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        path = REPLAY_DIR / f"snake_game_{game_number:04d}_score_{score}_{stamp}.json"
-        with path.open("w", encoding="utf-8") as f:
+        filename = (
+            f"{prefix}_game_{game_number:04d}_score_{score}_{stamp}.json"
+        )
+        path = REPLAY_DIR / filename
+
+        with path.open("w", encoding="utf-8") as file:
             json.dump(
                 {
                     "game_number": game_number,
@@ -49,7 +58,8 @@ class ReplayRecorder:
                     "timestamp": datetime.now().isoformat(timespec="microseconds"),
                     "frames": self.frames,
                 },
-                f,
+                file,
                 indent=2,
             )
+
         return path
