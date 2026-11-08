@@ -10,7 +10,7 @@ from common.config import (
     GREEN,
     DARKGREEN,
     DARKERGREEN,
-    RED,
+    MARGIN,
     CREAM,
 )
 
@@ -61,8 +61,14 @@ class SnakeRenderer:
             for x in range(l, l + w, GRID):
                 c = LIGHTGREEN if ((x // GRID + y // GRID) % 2) == 0 else DARKGREEN
                 pygame.draw.rect(self.screen, c, (x, y, GRID, GRID))
+        # Draw title within the top margin.
         title = self.font.render("~~Snake~~", True, GREEN)
-        self.screen.blit(title, title.get_rect(center=(WINDOW_SIZE // 2, 25)))
+
+        title_rect = title.get_rect(
+            center=(WINDOW_SIZE // 2, MARGIN // 2)
+        )
+
+        self.screen.blit(title, title_rect)
         self.screen.blit(self.font.render(f"Score: {g.score}", True, GREEN), (10, 10))
         if g.food is not None:
             self.screen.blit(self.apple, g.food)

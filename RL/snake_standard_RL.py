@@ -1,6 +1,39 @@
+
+import argparse
+
 from common.rewards import standard_reward
 from experiments.train_common import run_training
 
-if __name__=="__main__":
-    run_training(standard_reward,"standard",double_dqn=False,
-                 epsilon_start=80,epsilon_decay=2.0,epsilon_min=2)
+
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(
+        description="Train the standard Snake DQN agent."
+    )
+
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Resume from the latest training checkpoint.",
+    )
+
+    parser.add_argument(
+        "--checkpoint-every",
+        type=int,
+        default=25,
+        help="Save a checkpoint every N completed games.",
+    )
+
+    args = parser.parse_args()
+
+    run_training(
+        standard_reward,
+        "standard",
+        double_dqn=False,
+        epsilon_start=80,
+        epsilon_decay=0.5,
+        epsilon_min=5,
+        replay_threshold=50,
+        resume=args.resume,
+        checkpoint_every=args.checkpoint_every,
+    )

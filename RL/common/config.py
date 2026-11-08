@@ -1,16 +1,29 @@
+
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
-ASSET_DIR = PROJECT_DIR / "improved_assets"
+ASSET_DIR = PROJECT_DIR.parent / "improved_assets"
 LOG_DIR = PROJECT_DIR / "logs"
 REPLAY_DIR = PROJECT_DIR / "replays"
+CHECKPOINT_DIR = PROJECT_DIR / "checkpoints"
+
 GRID, WINDOW_SIZE, MARGIN, FPS = 40, 680, 80, 60
 RENDER = True
-PLAY_RECT = (MARGIN, MARGIN, WINDOW_SIZE - 2 * MARGIN, WINDOW_SIZE - 2 * MARGIN)
+
+PLAY_RECT = (
+    MARGIN,
+    MARGIN,
+    WINDOW_SIZE - 2 * MARGIN,
+    WINDOW_SIZE - 2 * MARGIN,
+)
+
 TOTAL_CELLS = ((WINDOW_SIZE - 2 * MARGIN) // GRID) ** 2
+
 STRAIGHT, LEFT, RIGHT = 0, 1, 2
+
 MAX_MEMORY, BATCH_SIZE = 5000, 128
 LEARNING_RATE, GAMMA = 0.001, 0.9
+
 LIGHTGREEN = (170, 215, 81)
 GREEN = (0, 255, 0)
 DARKGREEN = (167, 209, 61)
