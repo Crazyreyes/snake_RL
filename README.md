@@ -67,7 +67,13 @@ python snake_improved_RL.py --resume
 python snake_improved_RL.py --resume --checkpoint-every 25
 ```
 
-Close the game window to stop training. Training outputs are generated locally and are not committed:
+Train headless, without opening a game window (faster, and no display needed):
+
+```bash
+python snake_improved_RL.py --no-render
+```
+
+`SNAKE_RL_RENDER=0` does the same thing without the flag. Close the game window to stop training when rendering is on. Training outputs are generated locally and are not committed:
 
 - `RL/checkpoints/` — `best_model.pth` and `latest_training_checkpoint.pth` per experiment
 - `RL/logs/` — per-game training CSV

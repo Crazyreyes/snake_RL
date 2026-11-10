@@ -33,7 +33,7 @@ class DQNAgent:
         self.target_model.load_state_dict(self.model.state_dict())
         self.target_model.eval()
         self.optimizer = optim.Adam(self.model.parameters(), lr=LEARNING_RATE)
-        self.criterion = nn.MSELoss()
+        self.criterion = nn.SmoothL1Loss()
 
     def get_action(self, state):
         self.epsilon = max(
@@ -61,24 +61,26 @@ class DQNAgent:
         actions = torch.tensor(actions, dtype=torch.long)
         rewards = torch.tensor(rewards, dtype=torch.float32)
         dones = torch.tensor(dones, dtype=torch.bool)
+        batch_size = states.shape[0]
         pred = self.model(states)
         target = pred.detach().clone()
         with torch.no_grad():
-            online_next = self.model(next_states) if self.double_dqn else None
             target_next = self.target_model(next_states)
-            for i in range(BATCH_SIZE):
-                q = rewards[i]
-                if not dones[i]:
-                    next_q = (
-                        target_next[i][torch.argmax(online_next[i])]
-                        if self.double_dqn
-                        else torch.max(target_next[i])
-                    )
-                    q = q + GAMMA * next_q
-                target[i, actions[i]] = q
+            if self.double_dqn:
+                best_actions = self.model(next_states).argmax(dim=1)
+                next_q = target_next.gather(
+                    1, best_actions.unsqueeze(1)
+                ).squeeze(1)
+            else:
+                next_q = target_next.max(dim=1).values
+            # Terminal states get no bootstrapped value.
+            target_q = rewards + GAMMA * next_q * (~dones).float()
+        target = pred.detach().clone()
+        target[torch.arange(batch_size), actions] = target_q
         self.optimizer.zero_grad()
         loss = self.criterion(pred, target)
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
         self.optimizer.step()
         return float(loss.item())
 

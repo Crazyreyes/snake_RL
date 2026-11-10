@@ -16,8 +16,8 @@ from common.config import (
 
 
 class SnakeRenderer:
-    def __init__(self, title="Snake RL"):
-        self.enabled = RENDER
+    def __init__(self, title="Snake RL", enabled=None):
+        self.enabled = RENDER if enabled is None else enabled
         if not self.enabled:
             return
         pygame.init()

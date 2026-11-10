@@ -1,4 +1,4 @@
-
+import os
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -8,7 +8,12 @@ REPLAY_DIR = PROJECT_DIR / "replays"
 CHECKPOINT_DIR = PROJECT_DIR / "checkpoints"
 
 GRID, WINDOW_SIZE, MARGIN, FPS = 40, 680, 80, 60
-RENDER = True
+RENDER = os.environ.get("SNAKE_RL_RENDER", "1") not in (
+    "0",
+    "false",
+    "False",
+    "no",
+)
 
 PLAY_RECT = (
     MARGIN,

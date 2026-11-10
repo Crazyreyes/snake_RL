@@ -1,15 +1,11 @@
-
 import argparse
 
 from common.rewards import improved_reward
 from experiments.train_common import run_training
 
-
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(
-        description="Train the improved Snake DQN agent."
-    )
+    parser = argparse.ArgumentParser(description="Train the improved Snake DQN agent.")
 
     parser.add_argument(
         "--resume",
@@ -24,6 +20,12 @@ if __name__ == "__main__":
         help="Save a checkpoint every N completed games.",
     )
 
+    parser.add_argument(
+        "--no-render",
+        action="store_true",
+        help="Train headless, without opening a game window.",
+    )
+
     args = parser.parse_args()
 
     run_training(
@@ -36,4 +38,5 @@ if __name__ == "__main__":
         replay_threshold=50,
         resume=args.resume,
         checkpoint_every=args.checkpoint_every,
+        render=not args.no_render,
     )

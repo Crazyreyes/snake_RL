@@ -1,4 +1,3 @@
-
 import pygame
 
 from agents.dqn_agent import DQNAgent
@@ -27,12 +26,12 @@ def run_training(
     replay_threshold=40,
     resume=False,
     checkpoint_every=25,
+    render=None,
 ):
+    render = RENDER if render is None else render
 
     if checkpoint_every < 1:
-        raise ValueError(
-            "checkpoint_every must be at least 1."
-        )
+        raise ValueError("checkpoint_every must be at least 1.")
 
     logger, csv_path = setup_logger(name)
 
@@ -45,16 +44,12 @@ def run_training(
 
     game = SnakeGame()
 
-    renderer = SnakeRenderer(
-        f"Snake RL - {name}"
-    )
+    renderer = SnakeRenderer(f"Snake RL - {name}", enabled=render)
 
     replay = ReplayRecorder()
     replay.reset(game)
 
-    latest_checkpoint_path, best_model_path = (
-        get_checkpoint_paths(name)
-    )
+    latest_checkpoint_path, best_model_path = get_checkpoint_paths(name)
 
     best_score = -1
 
@@ -91,7 +86,7 @@ def run_training(
 
     while running:
 
-        if RENDER:
+        if render:
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
@@ -117,11 +112,7 @@ def run_training(
             reward,
             done,
             info["death_reason"],
-            (
-                info["new_head"]
-                if info["death_reason"]
-                else None
-            ),
+            (info["new_head"] if info["death_reason"] else None),
         )
 
         agent.remember(
@@ -187,9 +178,7 @@ def run_training(
                     score,
                 )
 
-                print(
-                    f"New best model saved: score {score}"
-                )
+                print(f"New best model saved: score {score}")
 
             # Save resumable training checkpoint.
             if agent.n_games % checkpoint_every == 0:
@@ -222,7 +211,7 @@ def run_training(
 
         renderer.render(game)
 
-    if RENDER:
+    if render:
         pygame.quit()
 
     print(
