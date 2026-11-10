@@ -32,6 +32,13 @@ if __name__ == "__main__":
         default=None,
         help="Stop automatically after N completed games.",
     )
+
+    parser.add_argument(
+        "--loss",
+        choices=["mse", "huber"],
+        default="huber",
+        help="Loss function: mse (Experiment 1) or huber (Experiment 2, default).",
+    )
         
     args = parser.parse_args()
 
@@ -47,4 +54,5 @@ if __name__ == "__main__":
         checkpoint_every=args.checkpoint_every,
         render=not args.no_render,
         max_games=args.max_games,
+        loss=args.loss,
     )

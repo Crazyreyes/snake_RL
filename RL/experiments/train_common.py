@@ -28,6 +28,7 @@ def run_training(
     checkpoint_every=25,
     render=None,
     max_games=None,
+    loss="huber",
 ):
     render = RENDER if render is None else render
 
@@ -44,6 +45,7 @@ def run_training(
         epsilon_start,
         epsilon_decay,
         epsilon_min,
+        loss=loss,
     )
 
     game = SnakeGame()

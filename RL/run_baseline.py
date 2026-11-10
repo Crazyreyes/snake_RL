@@ -10,11 +10,17 @@ Usage, from the RL/ directory:
     python run_baseline.py --games 100 --episodes 100
     python run_baseline.py --games 50 --skip-eval
     python run_baseline.py --games 100 --render
+    python run_baseline.py --games 100 --loss mse
 
 Training outputs and evaluation results are saved in the usual
 places (RL/checkpoints/, RL/logs/, RL/replays/, RL/evaluations/)
 and are not committed. If one trainer fails, the runner prints
 the failure and moves on to the next one instead of stopping.
+
+Note: checkpoints are shared between the two losses, so running
+with --loss mse after a --loss huber run overwrites that
+experiment's best model. Evaluation results are timestamped, so
+they survive — check RL/evaluations/ for each run's numbers.
 """
 
 import argparse
@@ -80,6 +86,13 @@ def main():
         help="Resume each trainer from its latest checkpoint.",
     )
 
+    parser.add_argument(
+        "--loss",
+        choices=["mse", "huber"],
+        default="huber",
+        help="Loss function: mse (Experiment 1) or huber (Experiment 2, default).",
+    )
+
     args = parser.parse_args()
 
     if args.games < 1 or args.episodes < 1:
@@ -87,12 +100,16 @@ def main():
 
     results = {}
 
+    print(f"Loss function: {args.loss}", flush=True)
+
     for experiment, script in EXPERIMENTS:
         command = [
             sys.executable,
             script,
             "--max-games",
             str(args.games),
+            "--loss",
+            args.loss,
         ]
 
         if not args.render:

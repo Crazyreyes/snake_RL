@@ -73,7 +73,16 @@ Train headless, without opening a game window (faster, and no display needed):
 python snake_improved_RL.py --no-render
 ```
 
-`SNAKE_RL_RENDER=0` does the same thing without the flag. Close the game window to stop training when rendering is on. Training outputs are generated locally and are not committed:
+`SNAKE_RL_RENDER=0` does the same thing without the flag. Close the game window to stop training when rendering is on.
+
+Choose the loss function with `--loss` — `huber` (Experiment 2, default) or `mse` (Experiment 1, no gradient clipping). See [EXPERIMENTS.md](EXPERIMENTS.md) for the two experiments and their results.
+
+```bash
+python snake_improved_RL.py --no-render --max-games 100 --loss mse
+python snake_improved_RL.py --no-render --max-games 100 --loss huber
+```
+
+Training outputs are generated locally and are not committed:
 
 - `RL/checkpoints/` — `best_model.pth` and `latest_training_checkpoint.pth` per experiment
 - `RL/logs/` — per-game training CSV
@@ -113,6 +122,7 @@ That trains standard, improved and Double DQN for 100 games each, then evaluates
 python run_baseline.py --games 50 --episodes 20
 python run_baseline.py --games 100 --skip-eval
 python run_baseline.py --games 100 --render
+python run_baseline.py --games 100 --loss mse
 ```
 
 Each trainer also accepts `--max-games` on its own, so it stops by itself instead of running until you close the window:

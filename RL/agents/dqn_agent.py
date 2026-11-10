@@ -18,14 +18,23 @@ class DQN(nn.Module):
 
 class DQNAgent:
     def __init__(
-        self, double_dqn=False, epsilon_start=80, epsilon_decay=0.5, epsilon_min=5
+        self,
+        double_dqn=False,
+        epsilon_start=80,
+        epsilon_decay=0.5,
+        epsilon_min=5,
+        loss="huber",
     ):
+        if loss not in ("mse", "huber"):
+            raise ValueError("loss must be 'mse' or 'huber'.")
+
         self.n_games = 0
         self.epsilon = 0
         self.double_dqn = double_dqn
         self.epsilon_start = epsilon_start
         self.epsilon_decay = epsilon_decay
         self.epsilon_min = epsilon_min
+        self.loss = loss
         self.update_target_every = 10
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = DQN()
@@ -33,7 +42,12 @@ class DQNAgent:
         self.target_model.load_state_dict(self.model.state_dict())
         self.target_model.eval()
         self.optimizer = optim.Adam(self.model.parameters(), lr=LEARNING_RATE)
-        self.criterion = nn.SmoothL1Loss()
+        # "mse" is Experiment 1 (original, no clipping).
+        # "huber" is Experiment 2 (Huber loss, gradient clipped at 1.0).
+        self.criterion = (
+            nn.SmoothL1Loss() if loss == "huber" else nn.MSELoss()
+        )
+        self.clip_grad = loss == "huber"
 
     def get_action(self, state):
         self.epsilon = max(
@@ -63,7 +77,6 @@ class DQNAgent:
         dones = torch.tensor(dones, dtype=torch.bool)
         batch_size = states.shape[0]
         pred = self.model(states)
-        target = pred.detach().clone()
         with torch.no_grad():
             target_next = self.target_model(next_states)
             if self.double_dqn:
@@ -80,7 +93,8 @@ class DQNAgent:
         self.optimizer.zero_grad()
         loss = self.criterion(pred, target)
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+        if self.clip_grad:
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
         self.optimizer.step()
         return float(loss.item())
 
