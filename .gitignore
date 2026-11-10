@@ -1,0 +1,9 @@
+# Training outputs — regenerate locally, don't commit
+**/logs/
+**/replays/
+**/checkpoints/
+**/evaluations/
+*.pth
+*.pkl
+__pycache__/
+.venv/

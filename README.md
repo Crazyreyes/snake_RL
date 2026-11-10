@@ -1,0 +1,1 @@
+Hand-rolled PyTorch DQN agent that learns to play Snake in Pygame — with checkpointing, resume, and independent evaluation. Best training score 64; greedy evaluation averages 46. No gym or stable-baselines — just pygame, torch and numpy.
