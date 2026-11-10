@@ -27,11 +27,15 @@ def run_training(
     resume=False,
     checkpoint_every=25,
     render=None,
+    max_games=None,
 ):
     render = RENDER if render is None else render
 
     if checkpoint_every < 1:
         raise ValueError("checkpoint_every must be at least 1.")
+
+    if max_games is not None and max_games < 1:
+        raise ValueError("max_games must be a positive number of games.")
 
     logger, csv_path = setup_logger(name)
 
@@ -84,7 +88,7 @@ def run_training(
 
     running = True
 
-    while running:
+    while running and (max_games is None or agent.n_games < max_games):
 
         if render:
             for event in pygame.event.get():
@@ -213,6 +217,9 @@ def run_training(
 
     if render:
         pygame.quit()
+
+    if max_games is not None and agent.n_games >= max_games:
+        print(f"Reached max games ({max_games}). " f"Completed {agent.n_games} games.")
 
     print(
         "Training stopped. Latest resumable checkpoint:",

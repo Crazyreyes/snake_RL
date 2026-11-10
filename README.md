@@ -98,6 +98,29 @@ python -m experiments.evaluate --checkpoint RL/checkpoints/snake_improved_RL/bes
 
 Results are printed and saved as CSV + JSON in `RL/evaluations/`.
 
+## Baseline: train and evaluate all three agents
+
+Run all three trainers for the same number of games, headless, one after another, then evaluate each one — no need to start each script by hand:
+
+```bash
+cd RL
+python run_baseline.py
+```
+
+That trains standard, improved and Double DQN for 100 games each, then evaluates each on 100 episodes. Other options:
+
+```bash
+python run_baseline.py --games 50 --episodes 20
+python run_baseline.py --games 100 --skip-eval
+python run_baseline.py --games 100 --render
+```
+
+Each trainer also accepts `--max-games` on its own, so it stops by itself instead of running until you close the window:
+
+```bash
+python snake_improved_RL.py --no-render --max-games 100
+```
+
 ## Project structure
 
 ```

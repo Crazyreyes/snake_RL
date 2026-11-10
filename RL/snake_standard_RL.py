@@ -26,6 +26,13 @@ if __name__ == "__main__":
         help="Train headless, without opening a game window.",
     )
 
+    parser.add_argument(
+        "--max-games",
+        type=int,
+        default=None,
+        help="Stop automatically after N completed games.",
+    )
+
     args = parser.parse_args()
 
     run_training(
@@ -39,4 +46,5 @@ if __name__ == "__main__":
         resume=args.resume,
         checkpoint_every=args.checkpoint_every,
         render=not args.no_render,
+        max_games=args.max_games,
     )
