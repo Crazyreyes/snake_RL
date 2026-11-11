@@ -68,19 +68,42 @@ python snake_improved_RL.py --no-render --max-games 100 --loss huber
 python run_baseline.py --games 100
 ```
 
-## Results — 250 training games, 100 evaluation episodes each
+## Results — seeded rerun, 250 training games, 100 evaluation episodes each
 
-| Agent | Exp 1 (MSE) eval avg |
-| --- | --- |
-| Standard | 48.36 |
-| Improved | 44.94 |
-| Improved Double DQN | 44.00 |
+Seeded rerun on Reyes's laptop (Python 3.14, pygame-ce 2.5.8,
+torch 2.14.0 CPU), 11 Nov 2026. Each cell is the mean evaluation
+average across seeds 42, 1 and 2; the per-seed values are in
+brackets. Results are the timestamped evaluation JSONs in
+`RL/evaluations/`, summarised with `RL/summarize_evaluations.py`.
 
-These numbers are Reyes's own 250-game run on his laptop
-(Python 3.14, pygame-ce 2.5.8). Single run, standard deviations
-around 10. Huber results will be added after the same run is
-repeated on the laptop. The clear gain so far is training speed
-(about 3× faster) plus the runner.
+| Agent | Exp 1 (MSE) mean eval avg | Exp 2 (Huber) mean eval avg | Huber − MSE |
+| --- | --- | --- | --- |
+| Standard | 52.09 (50.27, 53.82, 52.17) | 54.78 (57.94, 53.29, 53.11) | +2.69 |
+| Improved | 47.71 (49.66, 47.32, 46.15) | 48.28 (49.20, 45.78, 49.87) | +0.57 |
+| Improved Double DQN | 45.95 (45.77, 43.38, 48.70) | 48.08 (50.01, 49.52, 44.72) | +2.13 |
+
+Per-seed values are listed in seed order 42, 1, 2. Standard
+deviation across seeds: Huber 2.24 / 1.79 / 2.39, MSE 1.45 /
+1.46 / 2.18 (standard / improved / Double).
+
+Huber is ahead on all three agents, and the same direction was
+seen on Cherry's VM seed-repeat (Huber +1.77 / +3.09 / +2.78).
+But the gaps (+2.69, +0.57, +2.13) are about the same size as
+the seed-to-seed spread, so this is a consistent small edge,
+not a proven large win — improved is effectively tied (+0.57).
+Standard is the best agent on both losses. Double DQN does not
+beat improved on this rerun.
+
+Huber is also loopier: truncated games across the 3 seeds
+(300 episodes per agent) — Huber improved 17 and Double 15,
+vs MSE improved 5 and Double 3; standard 5 vs 3.
+
+This seeded rerun supersedes the earlier single runs. The
+original single-run comparison (Reyes's laptop MSE run:
+48.41 / 51.58 / 43.72; Cherry's VM Huber run: 51.63 / 46.62 /
+46.13) pointed the same way but was one run each, so it could
+have been luck. The clear gain remains training speed (about
+3× faster) plus the runner.
 
 At 100 games, epsilon is still 30.5 and neither version is
 converged, so 100-game runs are not a fair comparison — use 250
