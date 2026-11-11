@@ -175,6 +175,16 @@ def main():
         return 1
 
     print("\nAll steps finished. Check RL/evaluations/ for the results.")
+    
+    if not args.skip_eval:
+        summariser = Path(__file__).resolve().parent / "summarize_evaluations.py"
+        if summariser.is_file():
+            print()
+            run(
+                [sys.executable, str(summariser)],
+                "Summary of all evaluations so far",
+            )
+
     return 0
 
 
