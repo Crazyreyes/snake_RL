@@ -68,6 +68,40 @@ python snake_improved_RL.py --no-render --max-games 100 --loss huber
 python run_baseline.py --games 100
 ```
 
+## Loop fix (Experiment 3)
+
+The seeded rerun showed the agents loop: Huber improved had 17
+truncated games and Double 15 across 3 seeds, vs 5 and 3 for MSE,
+and standard averaged ~1,000 steps per episode. Two causes were
+found in the code:
+
+1. `standard_reward` had no revisit penalty at all — only a
+   -0.2 step cost and distance shaping. `improved_reward` had
+   one, but only a flat -2.0 on the 3rd visit to a cell in the
+   last 20 steps.
+2. A game had no step limit in training — it only ended on death
+   or a full board, so a looping agent could run to the 10,000-step
+   evaluation cap.
+
+The fix, in `RL/common/rewards.py` and `RL/common/snake_game.py`:
+
+- A shared graduated revisit penalty, applied to both rewards:
+  the 3rd visit to a cell in the last 20 steps costs 2.0, the
+  4th costs 4.0, and so on. Passing through a cell twice costs
+  nothing.
+- A starvation timeout (`STARVATION_LIMIT = 100` in
+  `RL/common/config.py`): if the snake goes 100 steps without
+  eating, the game ends with `death_reason` `"timeout"`, which
+  the reward functions punish like a death. The board is 13x13,
+  so crossing it takes at most ~26 steps — 100 is generous.
+  The timeout also ends evaluation episodes early, so truncated
+  counts should fall.
+
+Measure it the same seeded way as the Huber vs MSE rerun:
+`run_baseline.py --games 250 --loss huber --seed 42/1/2` (and
+MSE for comparison). Compare eval averages, average steps and
+truncated games against the seeded rerun table below.
+
 ## Results — seeded rerun, 250 training games, 100 evaluation episodes each
 
 Seeded rerun on Reyes's laptop (Python 3.14, pygame-ce 2.5.8,
@@ -86,9 +120,8 @@ Per-seed values are listed in seed order 42, 1, 2. Standard
 deviation across seeds: Huber 2.24 / 1.79 / 2.39, MSE 1.45 /
 1.46 / 2.18 (standard / improved / Double).
 
-Huber is ahead on all three agents, and the same direction was
-seen on Cherry's VM seed-repeat (Huber +1.77 / +3.09 / +2.78).
-But the gaps (+2.69, +0.57, +2.13) are about the same size as
+Huber is ahead on all three agents. But the gaps
+(+2.69, +0.57, +2.13) are about the same size as
 the seed-to-seed spread, so this is a consistent small edge,
 not a proven large win — improved is effectively tied (+0.57).
 Standard is the best agent on both losses. Double DQN does not
@@ -98,12 +131,9 @@ Huber is also loopier: truncated games across the 3 seeds
 (300 episodes per agent) — Huber improved 17 and Double 15,
 vs MSE improved 5 and Double 3; standard 5 vs 3.
 
-This seeded rerun supersedes the earlier single runs. The
-original single-run comparison (Reyes's laptop MSE run:
-48.41 / 51.58 / 43.72; Cherry's VM Huber run: 51.63 / 46.62 /
-46.13) pointed the same way but was one run each, so it could
-have been luck. The clear gain remains training speed (about
-3× faster) plus the runner.
+This seeded rerun supersedes the earlier single runs, which
+were one run each and could have been luck. The clear gain
+remains training speed (about 3× faster) plus the runner.
 
 At 100 games, epsilon is still 30.5 and neither version is
 converged, so 100-game runs are not a fair comparison — use 250
