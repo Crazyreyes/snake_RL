@@ -8,6 +8,7 @@ from common.config import LOG_DIR
 CSV_HEADER = [
     "Timestamp",
     "Loss",
+    "Seed",
     "Game",
     "Score",
     "Epsilon",
@@ -17,13 +18,13 @@ CSV_HEADER = [
 ]
 
 
-def setup_logger(name, loss="huber"):
+def setup_logger(name, loss="huber", seed=42):
     """Create a unique CSV and log file for one training session."""
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     prefix = experiment_file_prefix(name)
     run_stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    run_name = f"{prefix}_{loss}_training_{run_stamp}"
+    run_name = f"{prefix}_{loss}_seed{seed}_training_{run_stamp}"
 
     logger = logging.getLogger(run_name)
     logger.setLevel(logging.INFO)
@@ -43,13 +44,22 @@ def setup_logger(name, loss="huber"):
     with csv_path.open("w", newline="", encoding="utf-8") as file:
         csv.writer(file).writerow(CSV_HEADER)
 
-    logger.info("Experiment: %s | Loss: %s", name, loss)
+    logger.info("Experiment: %s | Loss: %s | Seed: %s", name, loss, seed)
 
     return logger, csv_path
 
 
 def log_game(
-    logger, path, game, score, epsilon, steps, total_reward, replay_saved, loss="huber"
+    logger,
+    path,
+    game,
+    score,
+    epsilon,
+    steps,
+    total_reward,
+    replay_saved,
+    loss="huber",
+    seed=42,
 ):
     stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -58,6 +68,7 @@ def log_game(
             [
                 stamp,
                 loss,
+                seed,
                 game,
                 score,
                 round(epsilon, 2),

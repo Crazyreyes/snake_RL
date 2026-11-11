@@ -13,6 +13,31 @@ differs.
 - `--max-games` — stop automatically after N games
 - `RL/experiments/train_common.py` — shared training loop
 - `RL/experiments/evaluate.py` — independent greedy evaluation
+ 
+## Seeding
+
+Training is seeded with `--seed` (default 42). It seeds Python's
+`random` (food placement, exploration, replay sampling), numpy
+and torch (network initial weights), via `RL/common/seed.py`.
+
+Same seed + same code + same machine and torch version = the same
+training run. Different seeds give different runs — use them to
+repeat a baseline and average out the luck:
+
+```bash
+cd RL
+python run_baseline.py --games 250 --loss huber --seed 42
+python run_baseline.py --games 250 --loss huber --seed 1
+python run_baseline.py --games 250 --loss huber --seed 2
+```
+
+The seed is recorded in the training log filename
+(`snake_improved_huber_seed42_training_...`), in the training
+CSV's Seed column, in checkpoint metadata, and in the evaluation
+JSON's `seed` field. Resuming a checkpoint with a different seed
+(or a different loss) is refused — the checkpoint's seed must
+match. Seeding does not guarantee bit-for-bit identical results
+across different machines, torch versions or pygame builds.
 
 ## Experiment 1 — MSE loss
 

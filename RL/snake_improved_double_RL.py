@@ -42,6 +42,13 @@ if __name__ == "__main__":
         help="Loss function: mse (Experiment 1) or huber (Experiment 2, default).",
     )
 
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for training (default: 42). Same seed + same code = same run.",
+    )
+
     args = parser.parse_args()
 
     run_training(
@@ -56,4 +63,5 @@ if __name__ == "__main__":
         render=not args.no_render,
         max_games=args.max_games,
         loss=args.loss,
+        seed=args.seed,
     )

@@ -115,6 +115,7 @@ def save_training_checkpoint(
             "epsilon_min": agent.epsilon_min,
             "update_target_every": agent.update_target_every,
             "loss": agent.loss,
+            "seed": agent.seed,
         },
         "model_state_dict": agent.model.state_dict(),
         "target_model_state_dict": agent.target_model.state_dict(),
@@ -157,6 +158,7 @@ def load_training_checkpoint(
     
     saved_config = dict(saved_config)
     saved_config.setdefault("loss", agent.loss)
+    saved_config.setdefault("seed", agent.seed)
 
     current_config = {
         "double_dqn": agent.double_dqn,
@@ -165,6 +167,7 @@ def load_training_checkpoint(
         "epsilon_min": agent.epsilon_min,
         "update_target_every": agent.update_target_every,
         "loss": agent.loss,
+        "seed": agent.seed,
     }
 
     if saved_config != current_config:
@@ -209,6 +212,7 @@ def load_training_checkpoint(
         "best_score": int(payload.get("best_score", -1)),
         "experiment_name": payload.get("experiment_name"),
         "loss": payload.get("agent_config", {}).get("loss"),
+        "seed": payload.get("agent_config", {}).get("seed"),
     }
 
 
@@ -226,6 +230,7 @@ def save_best_model(
         "experiment_name": experiment_name,
         "score": int(score),
         "loss": agent.loss,
+        "seed": agent.seed,
         "model_config": {
             "input_size": 15,
             "hidden_size": 128,
@@ -277,6 +282,7 @@ def load_model_for_inference(
         "experiment_name": payload.get("experiment_name"),
         "score": int(payload.get("score", 0)),
         "loss": payload.get("loss", "unknown"),
+        "seed": payload.get("seed", "unknown"),
     }
 
     return model, metadata

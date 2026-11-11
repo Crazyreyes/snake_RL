@@ -93,6 +93,13 @@ def main():
         help="Loss function: mse (Experiment 1) or huber (Experiment 2, default).",
     )
 
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42,
+        help="Random seed for training (default: 42). Same seed + same code = same run.",
+    )
+
     args = parser.parse_args()
 
     if args.games < 1 or args.episodes < 1:
@@ -100,7 +107,7 @@ def main():
 
     results = {}
 
-    print(f"Loss function: {args.loss}", flush=True)
+    print(f"Loss function: {args.loss} | Seed: {args.seed}", flush=True)
 
     for experiment, script in EXPERIMENTS:
         command = [
@@ -110,6 +117,8 @@ def main():
             str(args.games),
             "--loss",
             args.loss,
+            "--seed",
+            str(args.seed),
         ]
 
         if not args.render:
@@ -153,7 +162,7 @@ def main():
 
     print()
     print("=" * 60)
-    print(f"BASELINE SUMMARY (loss: {args.loss})")
+    print(f"BASELINE SUMMARY (loss: {args.loss}, seed: {args.seed})")
     print("=" * 60)
 
     for label, code in results.items():

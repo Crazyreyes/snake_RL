@@ -24,6 +24,7 @@ class DQNAgent:
         epsilon_decay=0.5,
         epsilon_min=5,
         loss="huber",
+        seed=42,
     ):
         if loss not in ("mse", "huber"):
             raise ValueError("loss must be 'mse' or 'huber'.")
@@ -35,6 +36,7 @@ class DQNAgent:
         self.epsilon_decay = epsilon_decay
         self.epsilon_min = epsilon_min
         self.loss = loss
+        self.seed = seed
         self.update_target_every = 10
         self.memory = deque(maxlen=MAX_MEMORY)
         self.model = DQN()

@@ -11,6 +11,7 @@ from common.checkpoint import (
 
 from common.config import RENDER
 from common.logger import log_game, setup_logger
+from common.seed import seed_all
 from common.replay import ReplayRecorder
 from common.renderer import SnakeRenderer
 from common.snake_game import SnakeGame
@@ -29,6 +30,7 @@ def run_training(
     render=None,
     max_games=None,
     loss="huber",
+    seed=42,
 ):
     render = RENDER if render is None else render
 
@@ -38,9 +40,12 @@ def run_training(
     if max_games is not None and max_games < 1:
         raise ValueError("max_games must be a positive number of games.")
 
-    logger, csv_path = setup_logger(name, loss=loss)
+    seed_all(seed)
+ 
+    logger, csv_path = setup_logger(name, loss=loss, seed=seed)
 
-    print(f"Training {name} | Loss: {loss}")
+    print(f"Training {name} | Loss: {loss} | Seed: {seed}")
+
 
     agent = DQNAgent(
         double_dqn,
@@ -48,6 +53,7 @@ def run_training(
         epsilon_decay,
         epsilon_min,
         loss=loss,
+        seed=seed,
     )
 
     game = SnakeGame()
@@ -173,6 +179,7 @@ def run_training(
                 total_reward,
                 saved,
                 loss=loss,
+                seed=seed,
             )
 
             # Save a new best-performing inference model.
