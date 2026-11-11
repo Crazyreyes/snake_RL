@@ -1,4 +1,16 @@
-"""Pygame viewer for playing back saved Snake replay files."""
+"""
+===============================================================================
+REPLAY_VIEWER
+===============================================================================
+
+Description:
+    Pygame viewer for playing back saved Snake replay files.
+
+    Loads a replay file and draws the recorded frames, so a game
+    can be watched back after training has finished.
+
+===============================================================================
+"""
 
 import pygame
 import json

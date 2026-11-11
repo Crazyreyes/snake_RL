@@ -1,4 +1,18 @@
-"""DQN network and agent for learning to play Snake."""
+"""
+===============================================================================
+AGENTS.DQN_AGENT
+===============================================================================
+
+Description:
+    DQN network and agent for learning to play Snake.
+
+    The network maps a 15-value game state to Q-values for three
+    actions (straight, right, left). The agent holds the replay
+    memory, picks actions epsilon-greedily, and trains against a
+    target network that is synced every 10 games.
+
+===============================================================================
+"""
 
 import random
 from collections import deque

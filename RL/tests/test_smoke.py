@@ -1,16 +1,29 @@
-"""Smoke tests for the Snake RL trainers.
+"""
+===============================================================================
+test_smoke.py
+===============================================================================
 
-These are the checks from the manual smoke test, as pytest:
+Description:
+    Smoke tests for the Snake RL trainers, as pytest.
 
-    cd RL
-    python -m pytest tests/ -v
+    The suite covers:
+    1. The game state has 15 float32 values.
+    2. The same seed gives the same random numbers, and a different seed differs.
+    3. The revisit penalty is 0 for one or two visits, -2.0 for three visits and -4.0 for four.
+    4. Going 100 steps without food ends the game as a timeout, for both the standard and improved rewards.
+    5. Eating food resets the starvation counter.
+    6. Training the improved agent for 3 games and evaluating it for 1 episode works end to end.
 
-The fast tests check the game, the rewards and the seeding
-directly. The end-to-end test trains the improved agent for
-3 games headlessly in a temporary copy of RL/ and evaluates it
-for 1 episode, exactly like the manual smoke test — it just
-does it in tmp_path, so it never touches your real logs,
-checkpoints or evaluations.
+    Testing approach
+    ----------------
+    - The fast tests check the game, the rewards and the seeding directly.
+    - The end-to-end test trains the improved agent for 3 games headlessly in a temporary copy of RL/ and evaluates it for 1 episode, exactly like the manual smoke test — it just does it in tmp_path, so it never touches your real logs, checkpoints or evaluations.
+    - The end-to-end test is marked slow, so it can be skipped with -m "not slow".
+
+    Run the test suite from the RL/ directory using:
+        python -m pytest tests/ -v
+    or for the fast tests only:
+        python -m pytest tests/ -v -m "not slow"
 """
 
 import csv

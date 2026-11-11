@@ -1,4 +1,16 @@
-"""Recorder that saves game frames as replay files."""
+"""
+===============================================================================
+COMMON.REPLAY
+===============================================================================
+
+Description:
+    Recorder that saves game frames as replay files.
+
+    Captures the frames of a game so a run can be watched back
+    later with the replay viewer, without re-running training.
+
+===============================================================================
+"""
 
 import json
 from datetime import datetime

@@ -1,4 +1,17 @@
-"""Shared training loop used by all three Snake trainers."""
+"""
+===============================================================================
+EXPERIMENTS.TRAIN_COMMON
+===============================================================================
+
+Description:
+    Shared training loop used by all three Snake trainers.
+
+    Runs the game, picks actions, stores transitions, trains the
+    agent and saves checkpoints. The standard, improved and improved
+    Double trainers differ only in the game and reward they pass in.
+
+===============================================================================
+"""
 
 import pygame
 

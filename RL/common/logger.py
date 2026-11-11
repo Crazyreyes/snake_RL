@@ -1,4 +1,17 @@
-"""Training log and CSV file creation for Snake RL runs."""
+"""
+===============================================================================
+COMMON.LOGGER
+===============================================================================
+
+Description:
+    Training log and CSV file creation for Snake RL runs.
+
+    Creates one timestamped log file and one CSV per training run.
+    The file names record the experiment, loss and seed, and the
+    CSV records the score and steps of every game.
+
+===============================================================================
+"""
 
 import csv
 import logging

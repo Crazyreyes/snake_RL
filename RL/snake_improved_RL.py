@@ -1,4 +1,17 @@
-"""Entry point for training the improved Snake DQN agent."""
+"""
+===============================================================================
+SNAKE_IMPROVED_RL
+===============================================================================
+
+Description:
+    Entry point for training the improved Snake DQN agent.
+
+    Trains the improved agent with the improved reward, which adds
+    tail-reachability and local-space shaping on top of the standard
+    reward. Supports --no-render, --max-games, --loss and --seed.
+
+===============================================================================
+"""
 
 import argparse
 

@@ -1,4 +1,17 @@
-"""Entry point for training the improved Double DQN Snake agent."""
+"""
+===============================================================================
+SNAKE_IMPROVED_DOUBLE_RL
+===============================================================================
+
+Description:
+    Entry point for training the improved Double DQN Snake agent.
+
+    Trains the improved agent with Double DQN, which picks the next
+    action with the online network and evaluates it with the target
+    network. Supports --no-render, --max-games, --loss and --seed.
+
+===============================================================================
+"""
 
 import argparse
 

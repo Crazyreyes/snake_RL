@@ -1,4 +1,19 @@
-"""Saving and loading Snake RL checkpoints."""
+"""
+===============================================================================
+COMMON.CHECKPOINT
+===============================================================================
+
+Description:
+    Saving and loading Snake RL checkpoints.
+
+    Saves the best model and the full training checkpoint (model,
+    optimiser, game count, epsilon, loss and seed). Loading refuses
+    to resume a checkpoint whose loss or seed does not match the
+    current run, so a run never silently continues under the wrong
+    settings.
+
+===============================================================================
+"""
 
 import random
 from collections import deque

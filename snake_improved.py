@@ -1,4 +1,17 @@
-"""Playable Snake game with sprite graphics and a grid board."""
+"""
+===============================================================================
+SNAKE_IMPROVED
+===============================================================================
+
+Description:
+    Playable Snake game with sprite graphics and a grid board.
+
+    A standalone playable Snake game, not used for training. Uses
+    sprite graphics on a grid board, with the improved visuals
+    from the course version of the game.
+
+===============================================================================
+"""
 
 import pygame, random
 

@@ -1,4 +1,17 @@
-"""Entry point for training the standard Snake DQN agent."""
+"""
+===============================================================================
+SNAKE_STANDARD_RL
+===============================================================================
+
+Description:
+    Entry point for training the standard Snake DQN agent.
+
+    Trains the standard agent with the standard reward, which uses
+    step cost and distance shaping only. Supports --no-render,
+    --max-games, --loss and --seed.
+
+===============================================================================
+"""
 
 import argparse
 

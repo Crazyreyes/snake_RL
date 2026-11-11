@@ -1,4 +1,18 @@
-"""Independent evaluation for trained Snake DQN models."""
+"""
+===============================================================================
+EXPERIMENTS.EVALUATE
+===============================================================================
+
+Description:
+    Independent evaluation for trained Snake DQN models.
+
+    Loads a saved best model and plays it greedily, with no
+    exploration and no learning, for a set number of episodes.
+    Reports the average, median, best and worst scores, average
+    steps and how many games hit the step cap.
+
+===============================================================================
+"""
 
 import argparse
 import csv

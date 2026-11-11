@@ -1,26 +1,35 @@
-"""Run all three Snake trainers, then evaluate each one.
+"""
+===============================================================================
+RUN_BASELINE
+===============================================================================
 
-Trains standard, improved and improved Double DQN for the same
-number of games, headless, one after another, then runs the
-independent greedy evaluation for each experiment.
+Description:
+    Run all three Snake trainers, then evaluate each one.
+
+    Trains standard, improved and improved Double DQN for the same
+    number of games, headless, one after another, then runs the
+    independent greedy evaluation for each experiment.
 
 Usage, from the RL/ directory:
+    Usage, from the RL/ directory:
 
-    python run_baseline.py
-    python run_baseline.py --games 100 --episodes 100
-    python run_baseline.py --games 50 --skip-eval
-    python run_baseline.py --games 100 --render
-    python run_baseline.py --games 100 --loss mse
+        python run_baseline.py
+        python run_baseline.py --games 100 --episodes 100
+        python run_baseline.py --games 50 --skip-eval
+        python run_baseline.py --games 100 --render
+        python run_baseline.py --games 100 --loss mse
 
-Training outputs and evaluation results are saved in the usual
-places (RL/checkpoints/, RL/logs/, RL/replays/, RL/evaluations/)
-and are not committed. If one trainer fails, the runner prints
-the failure and moves on to the next one instead of stopping.
+    Training outputs and evaluation results are saved in the usual
+    places (RL/checkpoints/, RL/logs/, RL/replays/, RL/evaluations/)
+    and are not committed. If one trainer fails, the runner prints
+    the failure and moves on to the next one instead of stopping.
 
-Note: checkpoints are shared between the two losses, so running
-with --loss mse after a --loss huber run overwrites that
-experiment's best model. Evaluation results are timestamped, so
-they survive — check RL/evaluations/ for each run's numbers.
+    Note: checkpoints are shared between the two losses, so running
+    with --loss mse after a --loss huber run overwrites that
+    experiment's best model. Evaluation results are timestamped, so
+    they survive — check RL/evaluations/ for each run's numbers.
+
+===============================================================================
 """
 
 import argparse

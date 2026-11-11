@@ -1,4 +1,18 @@
-"""Headless Snake game used for training and evaluation."""
+"""
+===============================================================================
+COMMON.SNAKE_GAME
+===============================================================================
+
+Description:
+    Headless Snake game used for training and evaluation.
+
+    Steps the game by one action and returns the reward, done flag,
+    score and transition data. Tracks steps since the last food;
+    more than 100 steps without eating ends the game as a timeout,
+    which counts as a death.
+
+===============================================================================
+"""
 
 import random
 from collections import deque

@@ -1,4 +1,18 @@
-"""Reward functions for the standard and improved Snake agents."""
+"""
+===============================================================================
+COMMON.REWARDS
+===============================================================================
+
+Description:
+    Reward functions for the standard and improved Snake agents.
+
+    The standard reward uses step cost and distance shaping only.
+    The improved reward adds tail-reachability and local-space
+    shaping. Both share the revisit penalty, which discourages the
+    snake from looping over cells it has already visited.
+
+===============================================================================
+"""
 
 from common.config import GRID
 

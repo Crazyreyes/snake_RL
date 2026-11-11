@@ -1,4 +1,16 @@
-"""Playable Snake game drawn with simple coloured rectangles."""
+"""
+===============================================================================
+SNAKE
+===============================================================================
+
+Description:
+    Playable Snake game drawn with simple coloured rectangles.
+
+    A standalone playable Snake game, not used for training. The
+    snake, food and board are drawn as plain coloured rectangles.
+
+===============================================================================
+"""
 
 import pygame, random
 

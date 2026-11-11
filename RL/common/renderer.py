@@ -1,4 +1,16 @@
-"""Pygame renderer that draws the Snake game during training."""
+"""
+===============================================================================
+COMMON.RENDERER
+===============================================================================
+
+Description:
+    Pygame renderer that draws the Snake game during training.
+
+    Draws the board, snake, food and score. Training runs headless
+    by default; rendering is only for watching a run live.
+
+===============================================================================
+"""
 
 import pygame
 from common.config import (

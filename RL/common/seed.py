@@ -1,4 +1,16 @@
-"""Seeding helper for the random sources used in training."""
+"""
+===============================================================================
+COMMON.SEED
+===============================================================================
+
+Description:
+    Seeding helper for the random sources used in training.
+
+    Seeds Python random, NumPy and PyTorch (and CUDA when it is
+    available) from one seed, so a training run can be repeated.
+
+===============================================================================
+"""
 
 import random
 

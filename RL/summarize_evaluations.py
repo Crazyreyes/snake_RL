@@ -1,4 +1,18 @@
-"""Summarise Snake evaluation results into readable tables."""
+"""
+===============================================================================
+SUMMARIZE_EVALUATIONS
+===============================================================================
+
+Description:
+    Summarise Snake evaluation results into readable tables.
+
+    Reads every evaluation JSON in RL/evaluations/, prints a per-run
+    table and a table averaged across seeds, and shows the Huber
+    minus MSE difference per agent. Can also write the tables to a
+    Markdown file with a CSV beside it.
+
+===============================================================================
+"""
 
 import argparse
 import csv

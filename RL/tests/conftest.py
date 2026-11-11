@@ -1,12 +1,20 @@
-"""Pytest setup for the RL smoke tests.
+"""
+===============================================================================
+TESTS.CONFTEST
+===============================================================================
 
-Run from the RL/ directory::
+Description:
+    Pytest setup for the RL smoke tests.
+ 
+    Run from the RL/ directory::
+ 
+        python -m pytest tests/ -v
 
-    python -m pytest tests/ -v
+    Adds RL/ to sys.path so `common.*` and `experiments.*` import
+    the same way the trainers do, and forces headless pygame so no
+    game window opens.
 
-Adds RL/ to sys.path so `common.*` and `experiments.*` import
-the same way the trainers do, and forces headless pygame so no
-game window opens.
+===============================================================================
 """
 
 import os

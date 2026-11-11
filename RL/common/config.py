@@ -1,4 +1,18 @@
-"""Shared paths, board settings and training constants for Snake RL."""
+"""
+===============================================================================
+COMMON.CONFIG
+===============================================================================
+
+Description:
+    Shared paths, board settings and training constants for Snake RL.
+
+    Board: 13 x 13 cells on a 520 x 520 play area. Training:
+    memory 5000, batch 128, learning rate 0.001, gamma 0.9,
+    epsilon 80 down to 5. Looping: starvation limit 100 steps
+    without food, which counts as a death.
+
+===============================================================================
+"""
 
 import os
 from pathlib import Path
