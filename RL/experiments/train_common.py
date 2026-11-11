@@ -38,7 +38,9 @@ def run_training(
     if max_games is not None and max_games < 1:
         raise ValueError("max_games must be a positive number of games.")
 
-    logger, csv_path = setup_logger(name)
+    logger, csv_path = setup_logger(name, loss=loss)
+
+    print(f"Training {name} | Loss: {loss}")
 
     agent = DQNAgent(
         double_dqn,
@@ -170,6 +172,7 @@ def run_training(
                 steps,
                 total_reward,
                 saved,
+                loss=loss,
             )
 
             # Save a new best-performing inference model.

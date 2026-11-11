@@ -122,12 +122,7 @@ def calculate_metrics(results):
     }
 
 
-def save_results(
-    experiment_name,
-    checkpoint_path,
-    results,
-    metrics,
-):
+def save_results(experiment_name, checkpoint_path, results, metrics, loss="unknown"):
     """Save episode results and evaluation summary."""
 
     EVALUATION_DIR.mkdir(
@@ -167,6 +162,7 @@ def save_results(
     # Save complete evaluation summary.
     summary = {
         "experiment": experiment_name,
+        "loss": loss,
         "checkpoint": str(checkpoint_path),
         "evaluation_timestamp": datetime.now().isoformat(),
         "seed_start": results[0]["seed"],
@@ -265,6 +261,11 @@ def main():
         metadata["score"],
     )
 
+    print(
+        "Loss:",
+        metadata.get("loss", "unknown"),
+    )
+
     print("\nStarting evaluation...\n")
 
     results = evaluate_policy(
@@ -272,6 +273,7 @@ def main():
         episodes=args.episodes,
         seed_start=args.seed_start,
         max_steps=args.max_steps,
+        loss=metadata.get("loss", "unknown"),
     )
 
     metrics = calculate_metrics(results)
@@ -281,6 +283,7 @@ def main():
         checkpoint_path,
         results,
         metrics,
+        loss=metadata.get("loss", "unknown"),
     )
 
     print("\n" + "=" * 55)

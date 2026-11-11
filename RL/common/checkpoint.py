@@ -114,6 +114,7 @@ def save_training_checkpoint(
             "epsilon_decay": agent.epsilon_decay,
             "epsilon_min": agent.epsilon_min,
             "update_target_every": agent.update_target_every,
+            "loss": agent.loss,
         },
         "model_state_dict": agent.model.state_dict(),
         "target_model_state_dict": agent.target_model.state_dict(),
@@ -160,6 +161,7 @@ def load_training_checkpoint(
         "epsilon_decay": agent.epsilon_decay,
         "epsilon_min": agent.epsilon_min,
         "update_target_every": agent.update_target_every,
+        "loss": agent.loss,
     }
 
     if saved_config != current_config:
@@ -203,6 +205,7 @@ def load_training_checkpoint(
         "epsilon": agent.epsilon,
         "best_score": int(payload.get("best_score", -1)),
         "experiment_name": payload.get("experiment_name"),
+        "loss": payload.get("agent_config", {}).get("loss"),
     }
 
 
@@ -219,6 +222,7 @@ def save_best_model(
         "checkpoint_type": "inference",
         "experiment_name": experiment_name,
         "score": int(score),
+        "loss": agent.loss,
         "model_config": {
             "input_size": 15,
             "hidden_size": 128,
@@ -269,6 +273,7 @@ def load_model_for_inference(
     metadata = {
         "experiment_name": payload.get("experiment_name"),
         "score": int(payload.get("score", 0)),
+        "loss": payload.get("loss", "unknown"),
     }
 
     return model, metadata

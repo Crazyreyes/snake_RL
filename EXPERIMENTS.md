@@ -61,5 +61,9 @@ At 100 games, epsilon is still 30.5 and neither version is
 converged, so 100-game runs are not a fair comparison — use 250
 games. Note: checkpoints are shared between the two losses, so
 running one loss after the other overwrites that experiment's
-best model. Evaluation results are timestamped in
-`RL/evaluations/`, so they survive.
+best model. The loss is recorded in the checkpoint itself, in the
+training log filename (`snake_improved_huber_training_...` /
+`snake_improved_mse_training_...`), in the training CSV's Loss
+column, and in the evaluation JSON's `loss` field — so a run can
+always be identified afterwards. Evaluation results are
+timestamped in `RL/evaluations/`, so they survive.

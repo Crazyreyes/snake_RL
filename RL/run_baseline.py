@@ -153,7 +153,7 @@ def main():
 
     print()
     print("=" * 60)
-    print("BASELINE SUMMARY")
+    print(f"BASELINE SUMMARY (loss: {args.loss})")
     print("=" * 60)
 
     for label, code in results.items():

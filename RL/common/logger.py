@@ -5,9 +5,9 @@ from datetime import datetime
 from common.artifact_naming import experiment_file_prefix
 from common.config import LOG_DIR
 
-
 CSV_HEADER = [
     "Timestamp",
+    "Loss",
     "Game",
     "Score",
     "Epsilon",
@@ -17,13 +17,13 @@ CSV_HEADER = [
 ]
 
 
-def setup_logger(name):
+def setup_logger(name, loss="huber"):
     """Create a unique CSV and log file for one training session."""
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
     prefix = experiment_file_prefix(name)
     run_stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    run_name = f"{prefix}_training_{run_stamp}"
+    run_name = f"{prefix}_{loss}_training_{run_stamp}"
 
     logger = logging.getLogger(run_name)
     logger.setLevel(logging.INFO)
@@ -36,25 +36,28 @@ def setup_logger(name):
 
     log_path = LOG_DIR / f"{run_name}.log"
     handler = logging.FileHandler(log_path, encoding="utf-8")
-    handler.setFormatter(
-        logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
-    )
+    handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
     logger.addHandler(handler)
 
     csv_path = LOG_DIR / f"{run_name}.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as file:
         csv.writer(file).writerow(CSV_HEADER)
 
+    logger.info("Experiment: %s | Loss: %s", name, loss)
+
     return logger, csv_path
 
 
-def log_game(logger, path, game, score, epsilon, steps, total_reward, replay_saved):
+def log_game(
+    logger, path, game, score, epsilon, steps, total_reward, replay_saved, loss="huber"
+):
     stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with path.open("a", newline="", encoding="utf-8") as file:
         csv.writer(file).writerow(
             [
                 stamp,
+                loss,
                 game,
                 score,
                 round(epsilon, 2),
