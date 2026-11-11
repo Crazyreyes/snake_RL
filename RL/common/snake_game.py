@@ -1,7 +1,7 @@
 import random
 from collections import deque
 import numpy as np
-from common.config import GRID, PLAY_RECT, TOTAL_CELLS, LEFT, RIGHT
+from common.config import GRID, PLAY_RECT, TOTAL_CELLS, LEFT, RIGHT, STARVATION_LIMIT
 
 
 class SnakeGame:
@@ -13,6 +13,7 @@ class SnakeGame:
         self.score = 0
         self.spawn_food()
         self.frame = 0
+        self.steps_since_food = 0
         self.position_history = deque(maxlen=20)
         return self.get_state()
 
@@ -166,6 +167,25 @@ class SnakeGame:
             self.spawn_food()
         else:
             self.body_pos.pop()
+        if grow:
+            self.steps_since_food = 0
+        else:
+            self.steps_since_food += 1
+
+        if self.steps_since_food > STARVATION_LIMIT:
+            t = {
+                "old_head": old,
+                "new_head": new,
+                "old_distance": old_dist,
+                "new_distance": old_dist,
+                "ate_food": False,
+                "death_reason": "timeout",
+                "local_space": 0.0,
+                "global_space": self.get_global_free_space(),
+                "tail_reachable": False,
+            }
+            return reward_function(self, t), True, self.score, t
+
         new_dist = (
             abs(new[0] - self.food[0]) + abs(new[1] - self.food[1]) if self.food else 0
         )

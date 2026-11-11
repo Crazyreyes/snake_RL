@@ -1,11 +1,17 @@
 from common.config import GRID
 
 
+def revisit_penalty(game):
+    visits = game.position_history.count(game.head_pos)
+    return -2.0 * (visits - 2) if visits > 2 else 0.0
+
+
 def standard_reward(game, t):
     if t["death_reason"]:
         return -100.0
     reward = -0.2
     reward += 0.5 if t["new_distance"] < t["old_distance"] else -0.2
+    reward += revisit_penalty(game)
     if t["ate_food"]:
         reward += 20.0
     return reward
@@ -18,8 +24,7 @@ def improved_reward(game, t):
     if not t["tail_reachable"] and t["local_space"] < 0.5 * t["global_space"]:
         reward -= 20.0
     reward += 0.05 * t["local_space"]
-    if game.position_history.count(game.head_pos) > 2:
-        reward -= 2.0
+    reward += revisit_penalty(game)
     if t["ate_food"]:
         reward += 20.0
     return reward
