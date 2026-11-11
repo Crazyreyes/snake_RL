@@ -154,6 +154,9 @@ def load_training_checkpoint(
         raise ValueError("Unsupported checkpoint version.")
 
     saved_config = payload["agent_config"]
+    
+    saved_config = dict(saved_config)
+    saved_config.setdefault("loss", agent.loss)
 
     current_config = {
         "double_dqn": agent.double_dqn,

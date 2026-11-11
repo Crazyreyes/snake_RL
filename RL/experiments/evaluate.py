@@ -273,7 +273,6 @@ def main():
         episodes=args.episodes,
         seed_start=args.seed_start,
         max_steps=args.max_steps,
-        loss=metadata.get("loss", "unknown"),
     )
 
     metrics = calculate_metrics(results)
