@@ -1,0 +1,3 @@
+# Development-only dependencies (tests). Not needed to play or train.
+-r requirements.txt
+pytest==9.2.0
