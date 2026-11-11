@@ -1,3 +1,5 @@
+"""Playable Snake game with sprite graphics and a grid board."""
+
 import pygame, random
 
 # Initialize pygame
@@ -5,6 +7,8 @@ pygame.init()
 
 # Draw the background grid
 def draw_grid(surface):
+    """Draw the chequered board grid on the given surface."""
+
     for row in range(PLAY_RECT.top, PLAY_RECT.bottom, SNAKE_SIZE):
         for col in range(PLAY_RECT.left, PLAY_RECT.right, SNAKE_SIZE):
             if ((row // SNAKE_SIZE + col // SNAKE_SIZE) % 2) == 0:
@@ -16,6 +20,8 @@ def draw_grid(surface):
 
 # Determines the correct image to be used for the next snake body
 def get_body_image(prev, curr, next):
+    """Return the body sprite for the segment between its neighbours."""
+
     px, py, _, _ = prev
     cx, cy, _, _ = curr
     nx, ny, _, _ = next
@@ -46,6 +52,8 @@ def get_body_image(prev, curr, next):
 
 # Determins the correct tail image to be used 
 def get_tail_image(tail, before_tail):
+    """Return the tail sprite pointing away from the segment before it."""
+
     tx, ty, _, _ = tail
     bx, by, _, _ = before_tail
 
@@ -63,6 +71,8 @@ def get_tail_image(tail, before_tail):
 
 # Spawn apples only on blank grids
 def spawn_apple():
+    """Return a random free position for a new apple."""
+    
     while True:
         x = random.randrange(PLAY_RECT.left, PLAY_RECT.right, SNAKE_SIZE)
         y = random.randrange(PLAY_RECT.top, PLAY_RECT.bottom, SNAKE_SIZE)

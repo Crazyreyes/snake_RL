@@ -1,3 +1,5 @@
+"""Training log and CSV file creation for Snake RL runs."""
+
 import csv
 import logging
 from datetime import datetime
@@ -61,6 +63,8 @@ def log_game(
     loss="huber",
     seed=42,
 ):
+    """Append one completed game to the training CSV and log file."""
+
     stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with path.open("a", newline="", encoding="utf-8") as file:

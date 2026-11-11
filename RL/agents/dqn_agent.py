@@ -1,3 +1,5 @@
+"""DQN network and agent for learning to play Snake."""
+
 import random
 from collections import deque
 import numpy as np
@@ -8,15 +10,23 @@ from common.config import MAX_MEMORY, BATCH_SIZE, LEARNING_RATE, GAMMA
 
 
 class DQN(nn.Module):
+    """Neural network that maps a 15-value game state to Q-values for three actions."""
+
     def __init__(self):
+        """Build the 15 to 128 to 3 feedforward network."""
+
         super().__init__()
         self.net = nn.Sequential(nn.Linear(15, 128), nn.ReLU(), nn.Linear(128, 3))
 
     def forward(self, x):
+        """Return Q-values for the given game state."""
+
         return self.net(x)
 
 
 class DQNAgent:
+    """DQN agent that stores experience and learns from sampled batches."""
+
     def __init__(
         self,
         double_dqn=False,
@@ -26,6 +36,8 @@ class DQNAgent:
         loss="huber",
         seed=42,
     ):
+        """Set up the agent, its networks, optimiser and loss function."""
+
         if loss not in ("mse", "huber"):
             raise ValueError("loss must be 'mse' or 'huber'.")
 
@@ -46,12 +58,12 @@ class DQNAgent:
         self.optimizer = optim.Adam(self.model.parameters(), lr=LEARNING_RATE)
         # "mse" is Experiment 1 (original, no clipping).
         # "huber" is Experiment 2 (Huber loss, gradient clipped at 1.0).
-        self.criterion = (
-            nn.SmoothL1Loss() if loss == "huber" else nn.MSELoss()
-        )
+        self.criterion = nn.SmoothL1Loss() if loss == "huber" else nn.MSELoss()
         self.clip_grad = loss == "huber"
 
     def get_action(self, state):
+        """Choose an action by epsilon-greedy exploration or the best Q-value."""
+
         self.epsilon = max(
             self.epsilon_start - self.n_games * self.epsilon_decay, self.epsilon_min
         )
@@ -65,9 +77,12 @@ class DQNAgent:
             )
 
     def remember(self, s, a, r, ns, done):
+        """Store one transition in the replay memory."""
+
         self.memory.append((s, a, r, ns, done))
 
     def train_long(self):
+        """Train the network on one sampled batch from replay memory."""
         if len(self.memory) < BATCH_SIZE:
             return
         batch = random.sample(self.memory, BATCH_SIZE)
@@ -83,9 +98,7 @@ class DQNAgent:
             target_next = self.target_model(next_states)
             if self.double_dqn:
                 best_actions = self.model(next_states).argmax(dim=1)
-                next_q = target_next.gather(
-                    1, best_actions.unsqueeze(1)
-                ).squeeze(1)
+                next_q = target_next.gather(1, best_actions.unsqueeze(1)).squeeze(1)
             else:
                 next_q = target_next.max(dim=1).values
             # Terminal states get no bootstrapped value.
@@ -101,4 +114,6 @@ class DQNAgent:
         return float(loss.item())
 
     def update_target_network(self):
+        """Copy the online network weights into the target network."""
+
         self.target_model.load_state_dict(self.model.state_dict())

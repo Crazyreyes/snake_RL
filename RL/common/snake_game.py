@@ -1,3 +1,5 @@
+"""Headless Snake game used for training and evaluation."""
+
 import random
 from collections import deque
 import numpy as np
@@ -5,7 +7,11 @@ from common.config import GRID, PLAY_RECT, TOTAL_CELLS, LEFT, RIGHT, STARVATION_
 
 
 class SnakeGame:
+    """Headless Snake game with movement, food, collisions and rewards."""
+
     def reset(self):
+        """Reset the game to its starting state and return the first state."""
+
         self.direction = (GRID, 0)
         centre = round((680 // 2) / GRID) * GRID
         self.head_pos = (centre, centre)
@@ -18,9 +24,13 @@ class SnakeGame:
         return self.get_state()
 
     def __init__(self):
+        """Create a new game in its starting state."""
+
         self.reset()
 
     def spawn_food(self):
+        """Place food on a random free cell."""
+
         left, top, width, height = PLAY_RECT
         cells = [
             (x, y)
@@ -32,6 +42,8 @@ class SnakeGame:
         return self.food is not None
 
     def collision_type(self, x, y, tail_will_move=False):
+        """Return what the snake would hit at the given position, if anything."""
+
         left, top, width, height = PLAY_RECT
         if not (left <= x < left + width and top <= y < top + height):
             return "wall"
@@ -39,9 +51,13 @@ class SnakeGame:
         return "body" if (x, y) in body else None
 
     def is_danger(self, pos):
+        """Return whether moving to the given position would cause a collision."""
+
         return self.collision_type(*pos, tail_will_move=(pos != self.food)) is not None
 
     def flood_fill_space(self, start):
+        """Count the free cells reachable from the given starting cell."""
+
         q = deque([start])
         seen = set()
         growing = start == self.food
@@ -66,12 +82,16 @@ class SnakeGame:
         return len(seen)
 
     def get_global_free_space(self, tail_will_move=False):
+        """Return the fraction of board cells that are free."""
+
         occupied = (
             1 + len(self.body_pos) - (1 if tail_will_move and self.body_pos else 0)
         )
         return max(0, TOTAL_CELLS - occupied) / TOTAL_CELLS
 
     def can_reach_tail(self, head_pos, tail_will_move=True):
+        """Return whether the snake can reach its own tail from the given position."""
+
         if not self.body_pos:
             return True
         tail = self.body_pos[-1]
@@ -101,6 +121,8 @@ class SnakeGame:
         return False
 
     def get_state(self):
+        """Return the 15-value state describing the game for the agent."""
+
         hx, hy = self.head_pos
         dx, dy = self.direction
         l = (-dy, dx)
@@ -127,6 +149,8 @@ class SnakeGame:
         )
 
     def move(self, action):
+        """Turn the snake left or right, or keep it going straight."""
+
         dirs = [(GRID, 0), (0, GRID), (-GRID, 0), (0, -GRID)]
         i = dirs.index(self.direction)
         if action == LEFT:
@@ -136,6 +160,8 @@ class SnakeGame:
         self.direction = dirs[i]
 
     def step(self, action, reward_function):
+        """Advance the game by one action and return the reward, done flag, score and transition."""
+
         self.frame += 1
         old = self.head_pos
         old_food = self.food

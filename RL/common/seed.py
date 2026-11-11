@@ -1,3 +1,5 @@
+"""Seeding helper for the random sources used in training."""
+
 import random
 
 import numpy as np

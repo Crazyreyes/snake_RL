@@ -1,3 +1,5 @@
+"""Shared training loop used by all three Snake trainers."""
+
 import pygame
 
 from agents.dqn_agent import DQNAgent
@@ -32,6 +34,8 @@ def run_training(
     loss="huber",
     seed=42,
 ):
+    """Train one Snake agent for the given number of games."""
+
     render = RENDER if render is None else render
 
     if checkpoint_every < 1:
@@ -41,11 +45,10 @@ def run_training(
         raise ValueError("max_games must be a positive number of games.")
 
     seed_all(seed)
- 
+
     logger, csv_path = setup_logger(name, loss=loss, seed=seed)
 
     print(f"Training {name} | Loss: {loss} | Seed: {seed}")
-
 
     agent = DQNAgent(
         double_dqn,

@@ -1,3 +1,5 @@
+"""Shared paths, board settings and training constants for Snake RL."""
+
 import os
 from pathlib import Path
 

@@ -1,3 +1,5 @@
+"""Playable Snake game drawn with simple coloured rectangles."""
+
 import pygame, random
 
 # Initialize pygame

@@ -22,6 +22,7 @@ EVALUATION_DIR = PROJECT_DIR / "evaluations"
 
 def zero_reward(game, transition):
     """Evaluation does not use rewards for learning."""
+
     return 0.0
 
 
@@ -194,6 +195,7 @@ def save_results(
 
 
 def main():
+    """Parse arguments, evaluate a trained model and save the results."""
 
     parser = argparse.ArgumentParser(
         description=("Independently evaluate a trained Snake DQN model.")

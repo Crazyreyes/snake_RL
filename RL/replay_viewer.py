@@ -1,3 +1,4 @@
+"""Pygame viewer for playing back saved Snake replay files."""
 
 import pygame
 import json
@@ -44,15 +45,16 @@ GREY = (100, 100, 100)
 # REPLAY VIEWER
 # ==========================
 
+
 class ReplayViewer:
+    """Pygame application that plays back saved Snake replays."""
 
     def __init__(self):
+        """Set up the window, load the assets and open the newest replay."""
 
         pygame.init()
 
-        self.screen = pygame.display.set_mode(
-            (WINDOW_SIZE, WINDOW_SIZE)
-        )
+        self.screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
 
         pygame.display.set_caption("Snake RL Replay Viewer")
 
@@ -86,6 +88,7 @@ class ReplayViewer:
     # ==========================
 
     def load_image(self, filename):
+        """Load one sprite image, returning None if the file cannot be loaded."""
 
         path = os.path.join(ASSET_DIR, filename)
 
@@ -98,6 +101,7 @@ class ReplayViewer:
             return None
 
     def load_assets(self):
+        """Load the apple, head, body and tail sprites."""
 
         self.apple = self.load_image("apple.png")
 
@@ -129,6 +133,7 @@ class ReplayViewer:
     # ==========================
 
     def find_replays(self):
+        """Return the saved replay files, newest first."""
 
         if not os.path.exists(REPLAY_DIR):
             os.makedirs(REPLAY_DIR)
@@ -140,15 +145,14 @@ class ReplayViewer:
         ]
 
         files.sort(
-            key=lambda filename: os.path.getmtime(
-                os.path.join(REPLAY_DIR, filename)
-            ),
+            key=lambda filename: os.path.getmtime(os.path.join(REPLAY_DIR, filename)),
             reverse=True,
         )
 
         return files
 
     def load_replay(self, index):
+        """Load the replay at the given index."""
 
         if not self.replay_files:
             return
@@ -185,6 +189,7 @@ class ReplayViewer:
     # ==========================
 
     def handle_input(self):
+        """Handle keyboard input and return whether playback should continue."""
 
         for event in pygame.event.get():
 
@@ -202,28 +207,21 @@ class ReplayViewer:
 
                 # Previous replay
                 elif event.key == pygame.K_LEFT:
-                    self.load_replay(
-                        self.current_replay_index - 1
-                    )
+                    self.load_replay(self.current_replay_index - 1)
 
                 # Next replay
                 elif event.key == pygame.K_RIGHT:
-                    self.load_replay(
-                        self.current_replay_index + 1
-                    )
+                    self.load_replay(self.current_replay_index + 1)
 
                 # Previous frame
                 elif event.key == pygame.K_UP:
-                    self.current_frame = max(
-                        0, self.current_frame - 1
-                    )
+                    self.current_frame = max(0, self.current_frame - 1)
                     self.paused = True
 
                 # Next frame
                 elif event.key == pygame.K_DOWN:
                     self.current_frame = min(
-                        len(self.frames) - 1,
-                        self.current_frame + 1
+                        len(self.frames) - 1, self.current_frame + 1
                     )
                     self.paused = True
 
@@ -266,6 +264,7 @@ class ReplayViewer:
         return True
 
     def update_playback(self):
+        """Advance to the next frame when the playback delay has passed."""
 
         if self.paused or not self.frames:
             return
@@ -289,6 +288,7 @@ class ReplayViewer:
     # ==========================
 
     def draw_grid(self):
+        """Draw the chequered board grid."""
 
         for row in range(
             PLAY_RECT.top,
@@ -314,6 +314,7 @@ class ReplayViewer:
                 )
 
     def draw_image(self, image, position, fallback_colour):
+        """Draw an image, or a coloured square if the image is missing."""
 
         if image is not None:
             self.screen.blit(image, position)
@@ -326,6 +327,7 @@ class ReplayViewer:
             )
 
     def draw_head(self, frame):
+        """Draw the snake head for the current frame."""
 
         direction = frame["direction"]
 
@@ -347,12 +349,10 @@ class ReplayViewer:
         )
 
     def draw_body(self, frame):
+        """Draw the snake body and tail for the current frame."""
 
         head = tuple(frame["head"])
-        body = [
-            tuple(position)
-            for position in frame["body"]
-        ]
+        body = [tuple(position) for position in frame["body"]]
 
         segments = [head] + body
 
@@ -373,19 +373,13 @@ class ReplayViewer:
             elif py == ny:
                 image = self.body["horizontal"]
 
-            elif (px < cx and ny < cy) or (
-                nx < cx and py < cy
-            ):
+            elif (px < cx and ny < cy) or (nx < cx and py < cy):
                 image = self.body["tl"]
 
-            elif (px > cx and ny < cy) or (
-                nx > cx and py < cy
-            ):
+            elif (px > cx and ny < cy) or (nx > cx and py < cy):
                 image = self.body["tr"]
 
-            elif (px < cx and ny > cy) or (
-                nx < cx and py > cy
-            ):
+            elif (px < cx and ny > cy) or (nx < cx and py > cy):
                 image = self.body["bl"]
 
             else:
@@ -398,11 +392,7 @@ class ReplayViewer:
 
             tail = body[-1]
 
-            before = (
-                body[-2]
-                if len(body) > 1
-                else head
-            )
+            before = body[-2] if len(body) > 1 else head
 
             tx, ty = tail
             bx, by = before
@@ -422,6 +412,7 @@ class ReplayViewer:
             self.draw_image(image, tail, DARKERGREEN)
 
     def draw_food(self, frame):
+        """Draw the food for the current frame."""
 
         food = frame.get("food")
 
@@ -435,6 +426,7 @@ class ReplayViewer:
         )
 
     def draw_attempted_head(self, frame):
+        """Highlight the cell the snake tried to move into."""
 
         attempted_head = frame.get("attempted_head")
 
@@ -473,6 +465,7 @@ class ReplayViewer:
     # ==========================
 
     def draw_text(self, text, x, y, colour=BLACK, font=None):
+        """Draw one line of text at the given position."""
 
         if font is None:
             font = self.small_font
@@ -486,7 +479,8 @@ class ReplayViewer:
         self.screen.blit(surface, (x, y))
 
     def draw_information(self, frame):
-
+        """Draw the game information and keyboard instructions."""
+        
         if not self.replay_data:
             return
 
@@ -506,9 +500,7 @@ class ReplayViewer:
             DARKERGREEN,
         )
 
-        title_rect = title.get_rect(
-            center=(WINDOW_SIZE // 2, 30)
-        )
+        title_rect = title.get_rect(center=(WINDOW_SIZE // 2, 30))
 
         self.screen.blit(title, title_rect)
 
@@ -606,6 +598,7 @@ class ReplayViewer:
     # ==========================
 
     def render(self):
+        """Draw the current replay frame to the screen."""
 
         self.screen.fill(CREAM)
 
@@ -617,9 +610,7 @@ class ReplayViewer:
                 RED,
             )
 
-            rect = message.get_rect(
-                center=(WINDOW_SIZE // 2, WINDOW_SIZE // 2)
-            )
+            rect = message.get_rect(center=(WINDOW_SIZE // 2, WINDOW_SIZE // 2))
 
             self.screen.blit(message, rect)
 
@@ -665,7 +656,8 @@ class ReplayViewer:
     # ==========================
 
     def run(self):
-
+        """Run the replay viewer until the window is closed."""
+        
         running = True
 
         while running:

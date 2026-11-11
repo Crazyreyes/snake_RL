@@ -1,3 +1,5 @@
+"""Summarise Snake evaluation results into readable tables."""
+
 import argparse
 import csv
 import json
@@ -13,6 +15,7 @@ LOSS_ORDER = ["huber", "mse", "unknown"]
 
 def load_evaluations(directory):
     """Return one entry per (loss, agent, seed), latest file wins."""
+
     entries = {}
     for path in sorted(directory.glob("snake_*_evaluation_*.json")):
         try:
@@ -40,16 +43,16 @@ def load_evaluations(directory):
 
 
 def sort_key(entry):
+    """Return the sort key for one evaluation entry."""
+
     loss = LOSS_ORDER.index(entry["loss"]) if entry["loss"] in LOSS_ORDER else 99
-    agent = (
-        AGENT_ORDER.index(entry["agent"])
-        if entry["agent"] in AGENT_ORDER
-        else 99
-    )
+    agent = AGENT_ORDER.index(entry["agent"]) if entry["agent"] in AGENT_ORDER else 99
     return (loss, agent, str(entry["seed"]))
 
 
 def per_run_rows(entries):
+    """Return one table row per evaluation run."""
+
     rows = []
     for e in sorted(entries, key=sort_key):
         m = e["metrics"]
@@ -72,12 +75,13 @@ def per_run_rows(entries):
 
 def across_seed_rows(entries):
     """Mean across seeds for each (loss, agent), plus Huber - MSE."""
+
     grouped = defaultdict(list)
     for e in entries:
         grouped[(e["loss"], e["agent"])].append(e)
 
     rows = []
-    for (loss, agent) in sorted(
+    for loss, agent in sorted(
         grouped,
         key=lambda k: (
             LOSS_ORDER.index(k[0]) if k[0] in LOSS_ORDER else 99,
@@ -126,6 +130,8 @@ def across_seed_rows(entries):
 
 
 def print_table(headers, rows):
+    """Print one table with aligned columns."""
+
     widths = [len(h) for h in headers]
     for row in rows:
         widths = [max(w, len(c)) for w, c in zip(widths, row)]
@@ -137,6 +143,8 @@ def print_table(headers, rows):
 
 
 def main():
+    """Summarise the evaluation JSONs and print the tables."""
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--dir",

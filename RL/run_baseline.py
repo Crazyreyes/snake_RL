@@ -50,6 +50,8 @@ def run(command, label):
 
 
 def main():
+    """Train all three agents, evaluate each one and print the summary."""
+    
     parser = argparse.ArgumentParser(
         description="Train all three Snake agents and evaluate each one."
     )

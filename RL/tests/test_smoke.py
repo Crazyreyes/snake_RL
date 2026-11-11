@@ -33,6 +33,8 @@ RL_DIR = Path(__file__).resolve().parent.parent
 
 
 def test_state_shape():
+    """Check that the game state has 15 float32 values."""
+
     game = SnakeGame()
     state = game.get_state()
     assert state.shape == (15,)
@@ -40,6 +42,8 @@ def test_state_shape():
 
 
 def test_seed_repeatable():
+    """Check that the same seed gives the same random numbers."""
+
     seed_all(42)
     first = [random.random() for _ in range(5)]
     seed_all(42)
@@ -50,6 +54,8 @@ def test_seed_repeatable():
 
 
 def test_revisit_penalty():
+    """Check the revisit penalty for one, two, three and four visits."""
+
     game = SnakeGame()
     game.head_pos = (100, 100)
     game.position_history.extend([(100, 100)] * 1)
@@ -63,6 +69,8 @@ def test_revisit_penalty():
 
 
 def test_starvation_timeout():
+    """Check that the standard agent times out after 100 steps without food."""
+
     game = SnakeGame()
     game.steps_since_food = 100
     reward, done, _score, info = game.step(0, standard_reward)
@@ -72,6 +80,8 @@ def test_starvation_timeout():
 
 
 def test_starvation_timeout_improved_reward():
+    """Check that the improved agent times out after 100 steps without food."""
+
     game = SnakeGame()
     game.steps_since_food = 100
     reward, done, _score, info = game.step(0, improved_reward)
@@ -81,6 +91,8 @@ def test_starvation_timeout_improved_reward():
 
 
 def test_eating_resets_starvation_counter():
+    """Check that eating food resets the starvation counter."""
+    
     game = SnakeGame()
     game.food = (game.head_pos[0] + 40, game.head_pos[1])
     game.steps_since_food = 90

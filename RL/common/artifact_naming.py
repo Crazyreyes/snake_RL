@@ -4,12 +4,8 @@ import re
 
 
 def experiment_file_prefix(experiment_name: str) -> str:
-    """Return the standard filename prefix for an RL experiment.
-
-    Examples:
-        improved -> snake_improved_RL
-        standard -> snake_standard_RL
-    """
+    """Return the standard filename prefix for an RL experiment."""
+    
     normalized_name = re.sub(
         r"[^a-z0-9]+",
         "_",

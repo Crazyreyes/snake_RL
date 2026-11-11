@@ -1,3 +1,5 @@
+"""Pygame renderer that draws the Snake game during training."""
+
 import pygame
 from common.config import (
     GRID,
@@ -16,7 +18,11 @@ from common.config import (
 
 
 class SnakeRenderer:
+    """Pygame window that draws the Snake game."""
+
     def __init__(self, title="Snake RL", enabled=None):
+        """Set up the display window and load the game assets if rendering is enabled."""
+
         self.enabled = RENDER if enabled is None else enabled
         if not self.enabled:
             return
@@ -28,10 +34,14 @@ class SnakeRenderer:
         self.load_assets()
 
     def image(self, name):
+        """Load one sprite image and scale it to a single grid cell."""
+
         img = pygame.image.load(str(ASSET_DIR / name)).convert_alpha()
         return pygame.transform.scale(img, (GRID, GRID))
 
     def load_assets(self):
+        """Load the apple, head, body and tail sprites."""
+
         self.apple = self.image("apple.png")
         self.head = {
             d: self.image(f"head_{d}.png") for d in ("up", "down", "left", "right")
@@ -52,6 +62,8 @@ class SnakeRenderer:
         }
 
     def render(self, g):
+        """Draw the current game state to the screen."""
+
         if not self.enabled:
             return
         self.screen.fill(CREAM)
@@ -64,9 +76,7 @@ class SnakeRenderer:
         # Draw title within the top margin.
         title = self.font.render("~~Snake~~", True, GREEN)
 
-        title_rect = title.get_rect(
-            center=(WINDOW_SIZE // 2, MARGIN // 2)
-        )
+        title_rect = title.get_rect(center=(WINDOW_SIZE // 2, MARGIN // 2))
 
         self.screen.blit(title, title_rect)
         self.screen.blit(self.font.render(f"Score: {g.score}", True, GREEN), (10, 10))

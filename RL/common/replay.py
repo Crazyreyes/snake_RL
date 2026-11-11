@@ -1,3 +1,5 @@
+"""Recorder that saves game frames as replay files."""
+
 import json
 from datetime import datetime
 
@@ -6,10 +8,16 @@ from common.config import REPLAY_DIR
 
 
 class ReplayRecorder:
+    """Records game frames and saves them as replay files."""
+
     def __init__(self):
+        """Start with an empty list of recorded frames."""
+
         self.frames = []
 
     def reset(self, game):
+        """Clear the recorded frames and record the starting game state."""
+
         self.frames = []
         self.record(game)
 
@@ -22,6 +30,8 @@ class ReplayRecorder:
         death_reason=None,
         attempted_head=None,
     ):
+        """Append the current game state and action as one replay frame."""
+
         self.frames.append(
             {
                 "head": list(game.head_pos),
@@ -45,9 +55,7 @@ class ReplayRecorder:
 
         prefix = experiment_file_prefix(experiment_name)
         stamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        filename = (
-            f"{prefix}_game_{game_number:04d}_score_{score}_{stamp}.json"
-        )
+        filename = f"{prefix}_game_{game_number:04d}_score_{score}_{stamp}.json"
         path = REPLAY_DIR / filename
 
         with path.open("w", encoding="utf-8") as file:

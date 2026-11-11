@@ -1,3 +1,5 @@
+"""Entry point for training the improved Double DQN Snake agent."""
+
 import argparse
 
 from common.rewards import improved_reward
