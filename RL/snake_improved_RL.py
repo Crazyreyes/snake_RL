@@ -16,7 +16,7 @@ Description:
 import argparse
 
 from common.rewards import improved_reward
-from experiments.train_common import run_training
+from experiments.train_common import epsilon_decay_for_games, run_training
 
 if __name__ == "__main__":
 
@@ -62,14 +62,28 @@ if __name__ == "__main__":
         help="Random seed for training (default: 42). Same seed + same code = same run.",
     )
 
+    parser.add_argument(
+        "--epsilon-games",
+        type=int,
+        default=None,
+        help="Stretch epsilon decay so it reaches 5 after N games "
+        "(default: 150 games, decay 0.5). Use the same N as --max-games "
+        "for a long run, e.g. --max-games 1000 --epsilon-games 1000.",
+    )
+
     args = parser.parse_args()
+
+    if args.epsilon_games is not None and args.epsilon_games < 1:
+        parser.error("--epsilon-games must be a positive number of games.")
 
     run_training(
         improved_reward,
         "improved",
         double_dqn=False,
         epsilon_start=80,
-        epsilon_decay=0.5,
+        epsilon_decay=(
+            epsilon_decay_for_games(args.epsilon_games) if args.epsilon_games else 0.5
+        ),
         epsilon_min=5,
         replay_threshold=50,
         resume=args.resume,

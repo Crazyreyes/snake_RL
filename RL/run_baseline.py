@@ -18,6 +18,7 @@ Usage, from the RL/ directory:
         python run_baseline.py --games 50 --skip-eval
         python run_baseline.py --games 100 --render
         python run_baseline.py --games 100 --loss mse
+        python run_baseline.py --games 1000 --epsilon-games 1000
 
     Training outputs and evaluation results are saved in the usual
     places (RL/checkpoints/, RL/logs/, RL/replays/, RL/evaluations/)
@@ -60,7 +61,7 @@ def run(command, label):
 
 def main():
     """Train all three agents, evaluate each one and print the summary."""
-    
+
     parser = argparse.ArgumentParser(
         description="Train all three Snake agents and evaluate each one."
     )
@@ -111,10 +112,22 @@ def main():
         help="Random seed for training (default: 42). Same seed + same code = same run.",
     )
 
+    parser.add_argument(
+        "--epsilon-games",
+        type=int,
+        default=None,
+        help="Stretch epsilon decay so it reaches 5 after N games "
+        "(default: 150 games, decay 0.5). Use the same N as --games "
+        "for a long run, e.g. --games 1000 --epsilon-games 1000.",
+    )
+
     args = parser.parse_args()
 
     if args.games < 1 or args.episodes < 1:
         parser.error("Games and episodes must be positive.")
+
+    if args.epsilon_games is not None and args.epsilon_games < 1:
+        parser.error("--epsilon-games must be a positive number of games.")
 
     results = {}
 
@@ -137,6 +150,9 @@ def main():
 
         if args.resume:
             command.append("--resume")
+
+        if args.epsilon_games:
+            command.extend(["--epsilon-games", str(args.epsilon_games)])
 
         code = run(command, f"Training: {experiment} ({args.games} games)")
         results[f"train:{experiment}"] = code
@@ -186,7 +202,7 @@ def main():
         return 1
 
     print("\nAll steps finished. Check RL/evaluations/ for the results.")
-    
+
     if not args.skip_eval:
         summariser = Path(__file__).resolve().parent / "summarize_evaluations.py"
         if summariser.is_file():

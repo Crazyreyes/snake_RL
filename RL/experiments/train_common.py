@@ -32,6 +32,14 @@ from common.renderer import SnakeRenderer
 from common.snake_game import SnakeGame
 
 
+def epsilon_decay_for_games(games, epsilon_start=80, epsilon_min=5):
+    """Return the per-game epsilon decay that reaches the minimum after the given games."""
+
+    if games < 1:
+        raise ValueError("epsilon games must be a positive number of games.")
+    return (epsilon_start - epsilon_min) / games
+
+
 def run_training(
     reward_function,
     name,
